@@ -12,18 +12,61 @@ const movieModel = require('../models/movie');
 // }
 
 async function favouriteMovies() {
-    const movies = await movieModel.where('isFavourite').equals(false);
-    return movies;
+    try {
+        const movies = await movieModel.where('isFavourite').equals(true);
+        return movies;
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 async function getMovie(id) {
-    const movie = await movieModel.findOne({ id });
-    return movie;
+    try {
+        const movie = await movieModel.findOne({ _id: id });
+        return movie;
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 async function search(keyword) {
-    const lowered = keyword.toLowerCase() + '';
-    const result = await movieModel.find({ title: { $regex: lowered, $options: 'i' } });
-    return result;
+    try {
+        const lowered = keyword.toLowerCase() + '';
+        const result = await movieModel.find({ title: { $regex: lowered, $options: 'i' } });
+        console.log(result);
+        return result;
+    } catch (e) {
+        console.log(e);
+    }
 }
-module.exports = { favouriteMovies, getMovie, search };
+
+async function updateRating(id, rating) {
+    try {
+        await movieModel.findOneAndUpdate({ _id: id }, { rating: Number(rating) });
+        const movie = await movieModel.findOne({ _id: id });
+        return movie;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function updateNote(id, note) {
+    try {
+        await movieModel.findOneAndUpdate({ _id: id }, { note: note });
+        const movie = await movieModel.findOne({ _id: id });
+        return movie;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function updateFavouriteStatus(id, isFavourite) {
+    try {
+        await movieModel.findOneAndUpdate({ _id: id }, { isFavourite: isFavourite });
+        const movie = await movieModel.findOne({ _id: id });
+        return movie;
+    } catch (e) {
+        console.log(e);
+    }
+}
+module.exports = { favouriteMovies, getMovie, search, updateRating, updateNote, updateFavouriteStatus };
